@@ -89,24 +89,15 @@ int Board::prepare_for_acquisition (int buffer_size, char *streamer_params)
         db = NULL;
     }
 
-    try
+    std::vector<std::string> required_fields {"num_rows", "timestamp_channel", "name"};
+    for (std::string field : required_fields)
     {
-        board_descr = brainflow_boards_json["boards"][int_to_string (board_id)];
-        std::vector<std::string> required_fields {"num_rows", "timestamp_channel", "name"};
-        for (std::string field : required_fields)
+        if (board_descr.find (field) == board_descr.end ())
         {
-            if (board_descr.find (field) == board_descr.end ())
-            {
-                safe_logger (spdlog::level::err,
-                    "Field {} is not found in brainflow_boards.h for id {}", field, board_id);
-                return (int)BrainFlowExitCodes::GENERAL_ERROR;
-            }
+            safe_logger (spdlog::level::err,
+                "Field {} is not found in brainflow_boards.h for id {}", field, board_id);
+            return (int)BrainFlowExitCodes::GENERAL_ERROR;
         }
-    }
-    catch (json::exception &e)
-    {
-        safe_logger (spdlog::level::err, e.what ());
-        return (int)BrainFlowExitCodes::GENERAL_ERROR;
     }
 
     int res = prepare_streamer (streamer_params);

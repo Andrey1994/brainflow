@@ -5,7 +5,6 @@
 #include "custom_cast.h"
 #include "muse_bglib_helper.h"
 #include "muse_constants.h"
-#include "muse_types.h"
 #include "timestamp.h"
 #include "uart.h"
 
@@ -23,7 +22,7 @@ int MuseBGLibHelper::initialize (struct BrainFlowInputParams params)
         input_params = params;
         exit_code = (int)BrainFlowExitCodes::SYNC_TIMEOUT_ERROR;
         initialized = true;
-        int buffer_size = get_buffer_size ();
+        int buffer_size = board_descr["num_rows"].get<int> ();
         if (db != NULL)
         {
             delete db;
@@ -323,8 +322,12 @@ void MuseBGLibHelper::ble_evt_attclient_find_information_found (
             {
                 characteristics[msg->chrhandle] = uuid;
             }
+            if (strcmp (str, MUSE_GATT_ATTR_GYRO) == 0)
+            {
+                characteristics[msg->chrhandle] = uuid;
+            }
         }
-        if ((characteristics.size () == 5) && (state == (int)DeviceState::OPEN_CALLED) &&
+        if ((characteristics.size () == 6) && (state == (int)DeviceState::OPEN_CALLED) &&
             (ccids.size () == 10))
         {
             exit_code = (int)BrainFlowExitCodes::STATUS_OK;
@@ -361,9 +364,33 @@ void MuseBGLibHelper::ble_evt_attclient_attribute_value (
                 (double)cast_16bit_to_int32 ((unsigned char *)&msg->value.data[6 + i * 6]);
             for (int j = 0; j < 4; j++)
             {
-                current_buf[i * 4 + j][5] = accel_valx / 16384;
-                current_buf[i * 4 + j][6] = accel_valy / 16384;
-                current_buf[i * 4 + j][7] = accel_valz / 16384;
+                current_buf[i * 4 + j][board_descr["accel_channels"][0].get<int> ()] =
+                    accel_valx / 16384;
+                current_buf[i * 4 + j][board_descr["accel_channels"][1].get<int> ()] =
+                    accel_valy / 16384;
+                current_buf[i * 4 + j][board_descr["accel_channels"][2].get<int> ()] =
+                    accel_valz / 16384;
+            }
+        }
+    }
+    else if (uuid == MUSE_GATT_ATTR_GYRO)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            double gyro_valx =
+                (double)cast_16bit_to_int32 ((unsigned char *)&msg->value.data[2 + i * 6]);
+            double gyro_valy =
+                (double)cast_16bit_to_int32 ((unsigned char *)&msg->value.data[4 + i * 6]);
+            double gyro_valz =
+                (double)cast_16bit_to_int32 ((unsigned char *)&msg->value.data[6 + i * 6]);
+            for (int j = 0; j < 4; j++)
+            {
+                current_buf[i * 4 + j][board_descr["gyro_channels"][0].get<int> ()] =
+                    gyro_valx * MUSE_GYRO_SCALE_FACTOR;
+                current_buf[i * 4 + j][board_descr["gyro_channels"][1].get<int> ()] =
+                    gyro_valy * MUSE_GYRO_SCALE_FACTOR;
+                current_buf[i * 4 + j][board_descr["gyro_channels"][2].get<int> ()] =
+                    gyro_valz * MUSE_GYRO_SCALE_FACTOR;
             }
         }
     }
@@ -372,22 +399,22 @@ void MuseBGLibHelper::ble_evt_attclient_attribute_value (
         int pos = -1;
         if (uuid == MUSE_GATT_ATTR_TP9)
         {
-            pos = 1;
+            pos = board_descr["eeg_channels"][0].get<int> ();
             new_eeg_data[0] = true;
         }
         if (uuid == MUSE_GATT_ATTR_AF7)
         {
-            pos = 2;
+            pos = board_descr["eeg_channels"][1].get<int> ();
             new_eeg_data[1] = true;
         }
         if (uuid == MUSE_GATT_ATTR_AF8)
         {
-            pos = 3;
+            pos = board_descr["eeg_channels"][2].get<int> ();
             new_eeg_data[2] = true;
         }
         if (uuid == MUSE_GATT_ATTR_TP10)
         {
-            pos = 4;
+            pos = board_descr["eeg_channels"][3].get<int> ();
             new_eeg_data[3] = true;
         }
 
@@ -405,8 +432,8 @@ void MuseBGLibHelper::ble_evt_attclient_attribute_value (
             val2 = (val2 - 0x800) * 125.0 / 256.0;
             current_buf[counter][pos] = val1;
             current_buf[counter + 1][pos] = val2;
-            current_buf[counter][0] = package_num;
-            current_buf[counter + 1][0] = package_num;
+            current_buf[counter][board_descr["package_num_channel"].get<int> ()] = package_num;
+            current_buf[counter + 1][board_descr["package_num_channel"].get<int> ()] = package_num;
         }
 
         int num_trues = 0;
@@ -430,7 +457,8 @@ void MuseBGLibHelper::ble_evt_attclient_attribute_value (
             size_t size = current_buf.size ();
             for (size_t i = 0; i < size; i++)
             {
-                current_buf[size - 1 - i][8] = timestamp - i * step;
+                current_buf[size - 1 - i][board_descr["timestamp_channel"].get<int> ()] =
+                    timestamp - i * step;
             }
         }
 
@@ -438,7 +466,8 @@ void MuseBGLibHelper::ble_evt_attclient_attribute_value (
         {
             for (size_t i = 0; i < current_buf.size (); i++)
             {
-                if (current_buf[i][8] > 1.0) // ski[ first package to set timestamp
+                if (current_buf[i][board_descr["timestamp_channel"].get<int> ()] >
+                    1.0) // skip first package to set timestamp
                 {
                     db->add_data (&current_buf[i][0]);
                 }

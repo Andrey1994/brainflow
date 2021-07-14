@@ -14,7 +14,9 @@
 #include "brainflow_constants.h"
 #include "brainflow_input_params.h"
 #include "data_buffer.h"
+#include "json.hpp"
 
+using json = nlohmann::json;
 
 enum class DeviceState : int
 {
@@ -49,13 +51,14 @@ protected:
     std::vector<std::vector<double>> current_buf;
     std::vector<bool> new_eeg_data;
     double last_timestamp;
+    json board_descr;
 
     void thread_worker ();
 
 public:
     volatile int exit_code;
 
-    MuseBGLibHelper ()
+    MuseBGLibHelper (json descr)
     {
         exit_code = (int)BrainFlowExitCodes::SYNC_TIMEOUT_ERROR;
         connection = -1;
@@ -67,6 +70,7 @@ public:
         control_char_handle = 0;
         db = NULL;
         last_timestamp = -1.0;
+        board_descr = descr;
     }
 
     virtual ~MuseBGLibHelper ()
@@ -88,7 +92,6 @@ public:
     virtual int config_device (const char *config);
 
     virtual std::string get_preset () = 0;
-    virtual int get_buffer_size () = 0;
 
     // callbacks from bglib which we need
     virtual void ble_evt_connection_status (const struct ble_msg_connection_status_evt_t *msg);

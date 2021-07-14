@@ -9,17 +9,12 @@
 class MuseSBGLibHelper : public MuseBGLibHelper
 {
 public:
-    MuseSBGLibHelper () : MuseBGLibHelper ()
+    MuseSBGLibHelper (json board_descr) : MuseBGLibHelper (board_descr)
     {
     }
 
     std::string get_preset ()
     {
         return "p21";
-    }
-
-    int get_buffer_size ()
-    {
-        return 10;
     }
 };

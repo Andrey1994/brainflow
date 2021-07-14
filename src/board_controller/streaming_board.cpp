@@ -44,6 +44,13 @@ int StreamingBoard::prepare_session ()
     try
     {
         board_id = std::stoi (params.other_info);
+        board_descr = brainflow_boards_json["boards"][std::to_string (board_id)];
+    }
+    catch (json::exception &e)
+    {
+        safe_logger (spdlog::level::err, "invalid json");
+        safe_logger (spdlog::level::err, e.what ());
+        return (int)BrainFlowExitCodes::GENERAL_ERROR;
     }
     catch (const std::exception &e)
     {

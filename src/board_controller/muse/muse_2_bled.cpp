@@ -3,7 +3,6 @@
 
 #include "get_dll_dir.h"
 #include "muse_2_bled.h"
-#include "muse_types.h"
 
 #include "brainflow_constants.h"
 

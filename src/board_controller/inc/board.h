@@ -40,6 +40,14 @@ public:
         streamer = NULL;
         this->board_id = board_id;
         this->params = params;
+        try
+        {
+            board_descr = brainflow_boards_json["boards"][std::to_string (board_id)];
+        }
+        catch (json::exception &e)
+        {
+            safe_logger (spdlog::level::err, e.what ());
+        }
     }
     virtual int prepare_session () = 0;
     virtual int start_stream (int buffer_size, char *streamer_params) = 0;

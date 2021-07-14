@@ -38,10 +38,10 @@ int initialize (void *param)
     switch (static_cast<BoardIds> (std::get<0> (*info)))
     {
         case BoardIds::MUSE_S_BLED_BOARD:
-            helper = new MuseSBGLibHelper ();
+            helper = new MuseSBGLibHelper (std::get<2> (*info));
             break;
         case BoardIds::MUSE_2_BLED_BOARD:
-            helper = new Muse2BGLibHelper ();
+            helper = new Muse2BGLibHelper (std::get<2> (*info));
             break;
         default:
             return (int)BrainFlowExitCodes::UNSUPPORTED_BOARD_ERROR;

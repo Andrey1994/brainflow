@@ -1,6 +1,5 @@
 #include <fstream>
 #include <set>
-#include <sstream>
 #include <string.h>
 #include <string>
 #include <vector>
@@ -10,12 +9,12 @@
 #include "brainflow_boards.h"
 #include "brainflow_constants.h"
 
-inline std::string int_to_string (int val);
-inline int get_single_value (
+
+static int get_single_value (
     int board_id, const char *param_name, int *value, bool use_logger = true);
-inline int get_string_value (
+static int get_string_value (
     int board_id, const char *param_name, char *string, int *len, bool use_logger = true);
-inline int get_array_value (
+static int get_array_value (
     int board_id, const char *param_name, int *output_array, int *len, bool use_logger = true);
 
 
@@ -23,7 +22,7 @@ int get_board_descr (int board_id, char *board_descr, int *len)
 {
     try
     {
-        std::string res = brainflow_boards_json["boards"][int_to_string (board_id)].dump ();
+        std::string res = brainflow_boards_json["boards"][std::to_string (board_id)].dump ();
         strcpy (board_descr, res.c_str ());
         *len = (int)strlen (res.c_str ());
         return (int)BrainFlowExitCodes::STATUS_OK;
@@ -166,18 +165,11 @@ int get_exg_channels (int board_id, int *exg_channels, int *len)
     return (int)BrainFlowExitCodes::STATUS_OK;
 }
 
-inline std::string int_to_string (int val)
-{
-    std::ostringstream ss;
-    ss << val;
-    return ss.str ();
-}
-
-inline int get_single_value (int board_id, const char *param_name, int *value, bool use_logger)
+static int get_single_value (int board_id, const char *param_name, int *value, bool use_logger)
 {
     try
     {
-        int val = (int)brainflow_boards_json["boards"][int_to_string (board_id)][param_name];
+        int val = (int)brainflow_boards_json["boards"][std::to_string (board_id)][param_name];
         *value = val;
         return (int)BrainFlowExitCodes::STATUS_OK;
     }
@@ -191,13 +183,13 @@ inline int get_single_value (int board_id, const char *param_name, int *value, b
     }
 }
 
-inline int get_array_value (
+static int get_array_value (
     int board_id, const char *param_name, int *output_array, int *len, bool use_logger)
 {
     try
     {
         std::vector<int> values =
-            brainflow_boards_json["boards"][int_to_string (board_id)][param_name];
+            brainflow_boards_json["boards"][std::to_string (board_id)][param_name];
         if (!values.empty ())
         {
             memcpy (output_array, &values[0], sizeof (int) * values.size ());
@@ -215,12 +207,12 @@ inline int get_array_value (
     }
 }
 
-inline int get_string_value (
+static int get_string_value (
     int board_id, const char *param_name, char *string, int *len, bool use_logger)
 {
     try
     {
-        std::string val = brainflow_boards_json["boards"][int_to_string (board_id)][param_name];
+        std::string val = brainflow_boards_json["boards"][std::to_string (board_id)][param_name];
         strcpy (string, val.c_str ());
         *len = (int)strlen (val.c_str ());
         return (int)BrainFlowExitCodes::STATUS_OK;
