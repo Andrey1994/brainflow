@@ -56,7 +56,11 @@ setup(
             os.path.join('lib', 'MuseLib.dll'),
             os.path.join('lib', 'MuseLib32.dll'),
             os.path.join('lib', 'libMuseLib.so'),
-            os.path.join('lib', 'libMuseLib.dylib')
+            os.path.join('lib', 'libMuseLib.dylib'),
+            os.path.join('lib', 'eego-SDK32.dll'),
+            os.path.join('lib', 'eego-SDK.dll'),
+            os.path.join('lib', 'libeego-SDK.so'),
+            os.path.join('lib', 'libeego-SDK32.so')
         ]
     },
     zip_safe=True,

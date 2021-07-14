@@ -73,6 +73,10 @@
           <include>MuseLib.dll</include>
           <include>libMuseLib.so</include>
           <include>libMuseLib.dylib</include>
+          <include>eego-SDK32.dll</include>
+          <include>eego-SDK.dll</include>
+          <include>libeego-SDK.so</include>
+          <include>libeego-SDK32.so</include>
         </includes>
       </resource>
     </resources>

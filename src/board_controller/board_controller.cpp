@@ -13,6 +13,7 @@
 #include <string>
 #include <utility>
 
+#include "ant_neuro.h"
 #include "board.h"
 #include "board_controller.h"
 #include "board_info_getter.h"
@@ -166,6 +167,12 @@ int prepare_session (int board_id, char *json_brainflow_input_params)
         case BoardIds::MUSE_2_BLED_BOARD:
             board = std::shared_ptr<Board> (new Muse2BLED (params));
             break;
+        case BoardIds::ANT_NEURO_EE_411_BOARD:
+            board = std::shared_ptr<Board> (
+                new AntNeuroBoard ((int)BoardIds::ANT_NEURO_EE_411_BOARD, params));
+            break;
+        // todo add more ant neuro boards, they will share the same class(AntNeuroBoard) but will
+        // have different board ids, just need to fill brainflow_boards.cpp
         default:
             return (int)BrainFlowExitCodes::UNSUPPORTED_BOARD_ERROR;
     }

@@ -34,7 +34,8 @@ public enum BoardIds
     GALEA_SERIAL_BOARD (20),
     MUSE_S_BLED_BOARD (21),
     MUSE_2_BLED_BOARD (22),
-    CROWN_BOARD (23);
+    CROWN_BOARD (23),
+    ANT_NEURO_EE_411_BOARD (24);
 
     private final int board_id;
     private static final Map<Integer, BoardIds> bi_map = new HashMap<Integer, BoardIds> ();

@@ -46,6 +46,7 @@ class BoardIds(enum.IntEnum):
     MUSE_S_BLED_BOARD = 21  #:
     MUSE_2_BLED_BOARD = 22  #:
     CROWN_BOARD = 23  #:
+    ANT_NEURO_EE_411_BOARD = 24 #:
 
 
 class LogLevels(enum.IntEnum):

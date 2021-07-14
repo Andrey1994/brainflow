@@ -1,0 +1,161 @@
+; Installation INF for the eego amplifier driver
+; Processor support for x86 based platforms.
+;
+; (c) Copyright 2014 eemagine (GmbH)
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=%CLASS_NAME%
+;ClassGUID={36FC9E60-C465-11CF-8056-444553540000}
+ClassGuid={C81F4287-06F2-46C6-9B20-3184EF99C198}
+provider=%PROVIDER%
+CatalogFile=CYUSB3.cat
+DriverVer=05/02/2013,1.2.3.3
+
+[SourceDisksNames]
+1=%INSTALL_DESC%,,,
+
+[SourceDisksFiles]
+CYUSB3.sys=1
+
+[DestinationDirs]
+CYUSB3.Files.Ext = 10,System32\Drivers
+
+[ControlFlags]
+ExcludeFromSelect=*
+
+[Manufacturer]
+%PROVIDER%=Device,NT,NTx86,NTamd64
+
+[ClassInstall32]
+Addreg=ClassInstallAddRegister
+
+[ClassInstallAddRegister]
+HKR,,,0,%CLASS_NAME%
+;HKR,,EnumPropPages32,,"cyusb3.ico,IconProvider"
+HKR,,Icon,,-20
+
+;for all platforms
+[Device.NT]
+;%VID_XXXX&PID_XXXX.DeviceDesc%=CyUsb3, USB\VID_XXXX&PID_XXXX
+%VID_2A56&PID_EE01.DeviceDesc%=CyUsb3, USB\VID_2A56&PID_EE01 ; eego - eegosports
+%VID_04B4&PID_00F3.DeviceDesc%=CyUsb3, USB\VID_04B4&PID_00F3 ; USB BootLoader
+%VID_04B4&PID_4720.DeviceDesc%=CyUsb3, USB\VID_04B4&PID_4720 ; USB BootProgrammer
+
+;for x86 platforms
+[Device.NTx86]
+;%VID_XXXX&PID_XXXX.DeviceDesc%=CyUsb3, USB\VID_XXXX&PID_XXXX
+%VID_2A56&PID_EE01.DeviceDesc%=CyUsb3, USB\VID_2A56&PID_EE01 ; eego - eegosports
+%VID_04B4&PID_00F3.DeviceDesc%=CyUsb3, USB\VID_04B4&PID_00F3 ; USB BootLoader
+%VID_04B4&PID_4720.DeviceDesc%=CyUsb3, USB\VID_04B4&PID_4720 ; USB BootProgrammer
+
+;for x64 platforms
+[Device.NTamd64]
+;%VID_XXXX&PID_XXXX.DeviceDesc%=CyUsb3, USB\VID_XXXX&PID_XXXX
+%VID_2A56&PID_EE01.DeviceDesc%=CyUsb3, USB\VID_2A56&PID_EE01 ; eego - eegosports
+%VID_04B4&PID_00F3.DeviceDesc%=CyUsb3, USB\VID_04B4&PID_00F3 ; USB BootLoader
+%VID_04B4&PID_4720.DeviceDesc%=CyUsb3, USB\VID_04B4&PID_4720 ; USB BootProgrammer
+
+[CYUSB3.NT]
+CopyFiles=CYUSB3.Files.Ext
+AddReg=CyUsb3.AddReg
+
+[CYUSB3.NT.HW]
+AddReg=CYUSB3.AddReg.Guid
+
+[CYUSB3.NT.Services]
+Addservice = CYUSB3,2,CYUSB3.AddService
+
+
+[CYUSB3.NTx86]
+CopyFiles=CYUSB3.Files.Ext
+AddReg=CyUsb3.AddReg
+
+[CYUSB3.NTx86.HW]
+AddReg=CYUSB3.AddReg.Guid
+
+[CYUSB3.NTx86.Services]
+Addservice = CYUSB3,2,CYUSB3.AddService
+
+[CYUSB3.NTamd64]
+CopyFiles=CYUSB3.Files.Ext
+AddReg=CyUsb3.AddReg
+
+[CYUSB3.NTamd64.HW]
+AddReg=CYUSB3.AddReg.Guid
+
+[CYUSB3.NTamd64.Services]
+Addservice = CYUSB3,2,CYUSB3.AddService
+
+
+[CYUSB3.AddReg]
+; Deprecating - do not use in new apps to identify a CYUSB3 driver
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,CYUSB3.sys
+; You may optionally include a check for DriverBase in your application to check for a CYUSB3 driver
+HKR,,DriverBase,,CYUSB3.sys
+HKR,"Parameters","MaximumTransferSize",0x10001,4096
+HKR,"Parameters","DebugLevel",0x10001,2
+HKR,,FriendlyName,,%DESCRIPTION%
+
+[CYUSB3.AddService]
+DisplayName    = %DESCRIPTION%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\CYUSB3.sys
+AddReg         = CYUSB3.AddReg
+LoadOrderGroup = Base
+
+[CYUSB3.Files.Ext]
+CYUSB3.sys
+
+[CYUSB3.AddReg.Guid]
+HKR,,DriverGUID,,%CYUSB3.GUID%
+
+;-------------- WDF Coinstaller installation
+[SourceDisksFiles]
+WdfCoInstaller01009.dll=1 ; make sure the number matches with SourceDisksNames
+
+[DestinationDirs]
+CoInstaller_CopyFiles = 11
+
+[CYUSB3.NTamd64.CoInstallers]
+AddReg=CoInstaller_AddReg
+CopyFiles=CoInstaller_CopyFiles
+
+[CYUSB3.NTx86.CoInstallers]
+AddReg=CoInstaller_AddReg
+CopyFiles=CoInstaller_CopyFiles
+
+[CoInstaller_CopyFiles]
+WdfCoInstaller01009.dll
+
+[CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller01009.dll,WdfCoInstaller"
+
+[CYUSB3.NTamd64.Wdf]
+KmdfService = CYUSB3, CYUSB3_wdfsect
+
+[CYUSB3.NTx86.Wdf]
+KmdfService = CYUSB3, CYUSB3_wdfsect
+
+[CYUSB3_wdfsect]
+KmdfLibraryVersion = 1.9
+
+
+[Strings]
+PROVIDER    = "eemagine"
+CLASS_NAME  = "Medical Imaging Solutions"
+COMPANY     = "eemagine Medical Imaging Solutions GmbH"
+DESCRIPTION = "eego amplifier USB3.0 Driver"
+DISPLAY_NAME = "eego amplifier USB3.0 Driver"
+INSTALL_DESC = "eemagine USB3.0 Driver Installation Disk"
+VID_XXXX&PID_XXXX.DeviceDesc="eemagine USB3.0 Generic Driver"
+VID_2A56&PID_EE01.DeviceDesc="eego amplifier"
+VID_04B4&PID_00F3.DeviceDesc="eemagine USB BootLoader"
+VID_04B4&PID_4720.DeviceDesc="eemagine USB BootProgrammer"
+
+CYUSB3.GUID="{AE18AA60-7F6A-11d4-97DD-00010229B959}"
+CYUSB3_Unused      = "."

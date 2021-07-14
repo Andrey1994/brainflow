@@ -338,8 +338,6 @@ ASALocalRun/
 .env
 .vscode/
 
-build*
-!tools/*
 installed*
 compiled/
 python/flowcat.egg-info/
@@ -358,7 +356,6 @@ java-package/brainflow/.settings/org.eclipse.jdt.apt.core.prefs
 java-package/brainflow/.settings/org.eclipse.jdt.core.prefs
 java-package/brainflow/.settings/org.eclipse.m2e.core.prefs
 java-package/brainflow/src/main/resources/
-matlab-package/lib/brainflow_boards.json
 matlab-package/brainflow/inc/
 matlab-package/brainflow/lib/
 python-package/brainflow/lib/

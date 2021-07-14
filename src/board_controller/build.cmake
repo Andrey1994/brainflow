@@ -1,12 +1,3 @@
-include (${CMAKE_HOME_DIRECTORY}/src/board_controller/openbci/ganglion_bglib/build.cmake)
-include (${CMAKE_HOME_DIRECTORY}/src/board_controller/gtec/build.cmake)
-include (${CMAKE_HOME_DIRECTORY}/src/board_controller/muse/muse_bglib/build.cmake)
-include (${CMAKE_HOME_DIRECTORY}/src/board_controller/neuromd/build.cmake)
-
-if (BUILD_OYMOTION_SDK)
-    include (${CMAKE_HOME_DIRECTORY}/third_party/gForceSDKCXX/build.cmake)
-endif (BUILD_OYMOTION_SDK)
-
 if (CMAKE_SIZEOF_VOID_P EQUAL 8)
     SET (BOARD_CONTROLLER_NAME "BoardController")
     if (APPLE)
@@ -79,7 +70,18 @@ SET (BOARD_CONTROLLER_SRC
     ${CMAKE_HOME_DIRECTORY}/src/board_controller/neuromd/brainbit_bled.cpp
     ${CMAKE_HOME_DIRECTORY}/src/board_controller/muse/muse_s_bled.cpp
     ${CMAKE_HOME_DIRECTORY}/src/board_controller/muse/muse_2_bled.cpp
+    ${CMAKE_HOME_DIRECTORY}/src/board_controller/ant_neuro/ant_neuro.cpp
 )
+
+include (${CMAKE_HOME_DIRECTORY}/src/board_controller/ant_neuro/build.cmake)
+include (${CMAKE_HOME_DIRECTORY}/src/board_controller/openbci/ganglion_bglib/build.cmake)
+include (${CMAKE_HOME_DIRECTORY}/src/board_controller/gtec/build.cmake)
+include (${CMAKE_HOME_DIRECTORY}/src/board_controller/muse/muse_bglib/build.cmake)
+include (${CMAKE_HOME_DIRECTORY}/src/board_controller/neuromd/build.cmake)
+
+if (BUILD_OYMOTION_SDK)
+    include (${CMAKE_HOME_DIRECTORY}/third_party/gForceSDKCXX/build.cmake)
+endif (BUILD_OYMOTION_SDK)
 
 add_library (
     ${BOARD_CONTROLLER_NAME} SHARED
@@ -109,6 +111,8 @@ target_include_directories (
     ${CMAKE_HOME_DIRECTORY}/third_party/gForceSDKCXX/src/inc
     ${CMAKE_HOME_DIRECTORY}/src/board_controller/ironbci/inc
     ${CMAKE_HOME_DIRECTORY}/src/board_controller/freeeeg32/inc
+    ${CMAKE_HOME_DIRECTORY}/third_party/ant_neuro
+    ${CMAKE_HOME_DIRECTORY}/src/board_controller/ant_neuro/inc
 )
 
 target_compile_definitions(${BOARD_CONTROLLER_NAME} PRIVATE -DNOMINMAX)

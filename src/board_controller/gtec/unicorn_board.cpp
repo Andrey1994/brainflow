@@ -363,31 +363,31 @@ UnicornBoard::~UnicornBoard ()
 
 int UnicornBoard::prepare_session ()
 {
-    safe_logger (spdlog::level::err, "UnicornBoard supports only Linux.");
+    safe_logger (spdlog::level::err, "UnicornBoard doesnt support MacOS.");
     return (int)BrainFlowExitCodes::UNSUPPORTED_BOARD_ERROR;
 }
 
 int UnicornBoard::config_board (std::string config, std::string &response)
 {
-    safe_logger (spdlog::level::err, "UnicornBoard supports only Linux.");
+    safe_logger (spdlog::level::err, "UnicornBoard doesnt support MacOS.");
     return (int)BrainFlowExitCodes::UNSUPPORTED_BOARD_ERROR;
 }
 
 int UnicornBoard::release_session ()
 {
-    safe_logger (spdlog::level::err, "UnicornBoard supports only Linux.");
+    safe_logger (spdlog::level::err, "UnicornBoard doesnt support MacOS.");
     return (int)BrainFlowExitCodes::UNSUPPORTED_BOARD_ERROR;
 }
 
 int UnicornBoard::stop_stream ()
 {
-    safe_logger (spdlog::level::err, "UnicornBoard supports only Linux.");
+    safe_logger (spdlog::level::err, "UnicornBoard doesnt support MacOS.");
     return (int)BrainFlowExitCodes::UNSUPPORTED_BOARD_ERROR;
 }
 
 int UnicornBoard::start_stream (int buffer_size, char *streamer_params)
 {
-    safe_logger (spdlog::level::err, "UnicornBoard supports only Linux.");
+    safe_logger (spdlog::level::err, "UnicornBoard doesnt support MacOS.");
     return (int)BrainFlowExitCodes::UNSUPPORTED_BOARD_ERROR;
 }
 #endif

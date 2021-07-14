@@ -47,7 +47,7 @@ jobs:
       max-parallel: 16
       matrix:
         build_type: [Release, Debug]
-        os: [ubuntu-18.04, macos-10.15]
+        os: [ubuntu-18.04, macos-11.0]
 
     steps:
     - name: Clone Repository
@@ -56,15 +56,20 @@ jobs:
       uses: jwlawson/actions-setup-cmake@v1.4
       with:
         cmake-version: '3.16.x'
+    - name: Install Ninja
+      if: (matrix.os == 'macos-11.0')
+      uses: seanmiddleditch/gha-setup-ninja@master
+      with:
+        version: 1.10.2
     # compile for macos and linux
     - name: Compile BrainFlow for MacOS
-      if: (matrix.os == 'macos-10.15')
+      if: (matrix.os == 'macos-11.0')
       run: |
         mkdir $GITHUB_WORKSPACE/build
         cd $GITHUB_WORKSPACE/build
-        cmake -DWARNINGS_AS_ERRORS=ON -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/artifacts/macos_$BUILD -DCMAKE_BUILD_TYPE=$BUILD ..
-        make
-        make install
+        cmake -G Ninja -DWARNINGS_AS_ERRORS=ON -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET=10.13 -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/artifacts/macos_$BUILD -DCMAKE_BUILD_TYPE=$BUILD ..
+        ninja
+        ninja install
       env:
         BUILD: ${{ matrix.build_type }}
     - name: Compile BrainFlow in ManyLinux
